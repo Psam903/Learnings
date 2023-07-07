@@ -73,11 +73,8 @@ WHERE  (    attending_doctor_id IN (1, 5, 19)    AND patient_id % 2 != 0  )
 /Show patient_id, first_name, last_name, and attending doctor's specialty.
 Show only the patients who has a diagnosis as 'Epilepsy' and the doctor's first name is 'Lisa'
 
-Check patients, admissions, and doctors tables for required information.
-
-SELECT
-  p.patient_id,
-  p.first_name AS patient_first_name,
+/Check patients, admissions, and doctors tables for required information.
+SELECT  p.patient_id,  p.first_name AS patient_first_name,
   p.last_name AS patient_last_name,
   d.specialty AS attending_doctor_specialty
 FROM patients p
@@ -109,3 +106,35 @@ WHERE
 SELECT 
    CONCAT(ROUND(SUM(gender='M') / CAST(COUNT(*) AS float), 4) * 100, '%')
 FROM patients;
+
+/Show first name, last name, and gender of patients whose gender is 'M'
+SELECT first_name,last_name,gender  FROM patients where gender= "M"
+
+/Show patient_id and first_name from patients where their first_name start and ends with 's' and is at least 6 characters long.
+SELECT   patient_id,  first_name FROM patients WHERE first_name LIKE 's____%s';
+
+/Show patient_id, first_name, last_name from patients whos diagnosis is 'Dementia'. Primary diagnosis is stored in the admissions table.
+SELECT   patient_id,   first_name FROM patients WHERE first_name LIKE 's____%s';
+
+/Display every patient's first_name. Order the list by the length of each name and then by alphabetically
+SELECT first_name from patients order by Len(first_name), first_name
+
+/Show first name, last name and role of every person that is either patient or doctor. The roles are either "Patient" or "Doctor"
+SELECT first_name, last_name, 'Patient' as role FROM patients
+   UNION ALL
+SELECT first_name, last_name, 'Doctor' as role FROM doctors;
+
+/Show all allergies ordered by popularity. Remove NULL values from query.
+select allergies, count(*) as total_allegries from patientswhere allergies is not null group by allergies order by total_allegries desc
+
+/Display patient's full name, height in the units feet rounded to 1 decimal,weight in the unit pounds rounded to 0 decimals,birth_date,
+gender non abbreviated. Convert CM to feet by dividing by 30.48.Convert KG to pounds by multiplying by 2.205.
+SELECT CONCAT( first_name, last_name) as "patient_name", round(height / 30.48, 1) as "feets", ROUND ( weight *2.205,0) as "pounds", birth_date,
+CASE when gender = "M" then "male" ELSE "female" END AS "gender_type" FROM patients
+
+/Display the number of duplicate patients based on their first_name and last_name.
+SELECT   first_name,   last_name,   COUNT(*) as duplicates FROM patients GROUP BY   first_name,   last_name HAVING duplicates > 1
+
+/Display the total amount of patients for each province. Order by descending.
+SELECT   province_name,   COUNT(*) as patient_count FROM patients pa   join province_names pr on pr.province_id = pa.province_id
+group by pr.province_id order by patient_count desc
